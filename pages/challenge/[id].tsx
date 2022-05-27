@@ -2,19 +2,22 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Link from "next/link";
 import { client } from "../../libs/client"
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs';
 import styles from '../../styles/Home.module.css'
+import { ReactElement } from 'react';
 
-const Article: NextPage = ({article}) => {
+const Article: NextPage<{article: any}> = ({article}) => {
 
 
-  const card = (task, type) => {
-    const log = task['action-log'].filter(li => li.announce.id === article.id && li.type === type).map((log) => {
-      return {
-        note: log.note,
-        fieldId: log.fieldId,
-      };
-    });
+  const card = (task: any , type: 'report' | 'schedule'): ReactElement => {
+    const log = task['action-log']
+      .filter((li: any) => li.announce.id === article.id && li.type[0] === type)
+      .map((log: any) => {
+        return {
+          note: log.note,
+          fieldId: log.fieldId,
+        };
+      });
     return (
       <article className={styles.task}>
         <header>
@@ -24,8 +27,8 @@ const Article: NextPage = ({article}) => {
           <h3>{task.title}</h3>
         </header>
         <ul>
-          {log.map(li => (
-            <li>{li.note}</li>
+          {log.map((li: any, index: number) => (
+            <li key={`${type}-${index}`}>{li.note}</li>
           ))}
         </ul>
       </article>
@@ -47,7 +50,7 @@ const Article: NextPage = ({article}) => {
             <h2 className={styles.description}>やったこと</h2>
           </header>
           <div>
-          {article.report.map(({task}) => card(task, 'report'))}
+          {article.report.map((item: {task: any}) => card(item.task, 'report'))}
           </div>
         </article>
         <article>
@@ -55,7 +58,7 @@ const Article: NextPage = ({article}) => {
             <h2 className={styles.description}>やること</h2>
           </header>
           <div className={styles.taskList}>
-          {article.schedule.map(({task}) => card(task, 'schedule'))}
+          {article.schedule.map((item: {task: any}) => card(item.task, 'schedule'))}
           </div>
         </article>
       </main>
@@ -75,12 +78,12 @@ export default Article
 export const getStaticPaths = async () => {
   const data = await client.get({ endpoint: "challenge" });
 
-  const paths = data.contents.map((content) => `/challenge/${content.id}`);
+  const paths = data.contents.map((content: any) => `/challenge/${content.id}`);
   return { paths, fallback: false };
 };
 
 // データをテンプレートに受け渡す部分の処理を記述します
-export const getStaticProps = async (context) => {
+export const getStaticProps = async (context: any) => {
   const id = context.params.id;
   const data = await client.get({ endpoint: "challenge", contentId: id });
 
