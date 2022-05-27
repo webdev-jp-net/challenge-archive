@@ -9,7 +9,7 @@ import { ReactElement } from 'react';
 const Article: NextPage<{article: any}> = ({article}) => {
 
 
-  const card = (task: any , type: 'report' | 'schedule'): ReactElement => {
+  const card = (task: any , type: 'report' | 'schedule', index: number): ReactElement => {
     const log = task['action-log']
       .filter((li: any) => li.announce.id === article.id && li.type[0] === type)
       .map((log: any) => {
@@ -19,7 +19,7 @@ const Article: NextPage<{article: any}> = ({article}) => {
         };
       });
     return (
-      <article className={styles.task}>
+      <article key={`${type}-${index}`} className={styles.task}>
         <header>
           <span>{task.attribute.id}</span>
           {' '}:{' '}
@@ -27,8 +27,8 @@ const Article: NextPage<{article: any}> = ({article}) => {
           <h3>{task.title}</h3>
         </header>
         <ul>
-          {log.map((li: any, index: number) => (
-            <li key={`${type}-${index}`}>{li.note}</li>
+          {log.map((li: any, ind: number) => (
+            <li key={`${type}-${ind}`}>{li.note}</li>
           ))}
         </ul>
       </article>
@@ -50,7 +50,7 @@ const Article: NextPage<{article: any}> = ({article}) => {
             <h2 className={styles.description}>やったこと</h2>
           </header>
           <div>
-          {article.report.map((item: {task: any}) => card(item.task, 'report'))}
+          {article.report.map((item: {task: any}, index: number) => card(item.task, 'report', index))}
           </div>
         </article>
         <article>
@@ -58,8 +58,30 @@ const Article: NextPage<{article: any}> = ({article}) => {
             <h2 className={styles.description}>やること</h2>
           </header>
           <div className={styles.taskList}>
-          {article.schedule.map((item: {task: any}) => card(item.task, 'schedule'))}
+          {article.schedule.map((item: {task: any}, index: number) => card(item.task, 'schedule', index))}
           </div>
+        </article>
+        <article>
+          <header>
+            <h2 className={styles.description}>
+              メモ
+              <div className={styles.exciting} >
+              {article.exciting.map((item: 'beneficial' | 'fun' | 'gj' | 'disappointed', index: number) => (
+                <span key={`exciting-${index}`}>
+                  {item === 'beneficial' && '📚'}
+                  {item === 'fun' && '🌈'}
+                  {item === 'gj' && '💮'}
+                  {item === 'disappointed' && '😵‍💫'}
+                </span>
+                ))}
+              </div>
+              </h2>
+          </header>
+          <div
+            dangerouslySetInnerHTML={{
+              __html: `${article.note}`,
+            }}
+          />
         </article>
       </main>
       <footer className={styles.footer}>

@@ -131,5 +131,10 @@
   gap: 18px;
 }
 
-.task {
+.exciting {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
 }
