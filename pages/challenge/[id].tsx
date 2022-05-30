@@ -62,26 +62,30 @@ const Article: NextPage<{article: any}> = ({article}) => {
           </div>
         </article>
         <article>
-          <header>
-            <h2 className={styles.description}>
-              メモ
-              <div className={styles.exciting} >
-              {article.exciting.map((item: 'beneficial' | 'fun' | 'gj' | 'disappointed', index: number) => (
-                <span key={`exciting-${index}`}>
-                  {item === 'beneficial' && '📚'}
-                  {item === 'fun' && '🌈'}
-                  {item === 'gj' && '💮'}
-                  {item === 'disappointed' && '😵‍💫'}
-                </span>
-                ))}
-              </div>
-              </h2>
-          </header>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: `${article.note}`,
-            }}
-          />
+          {article.note && (
+            <>
+              <header>
+              <h2 className={styles.description}>
+                メモ
+                <div className={styles.exciting} >
+                {article.exciting.map((item: 'beneficial' | 'fun' | 'gj' | 'disappointed', index: number) => (
+                  <span key={`exciting-${index}`}>
+                    {item === 'beneficial' && '📚'}
+                    {item === 'fun' && '🌈'}
+                    {item === 'gj' && '💮'}
+                    {item === 'disappointed' && '😵‍💫'}
+                  </span>
+                  ))}
+                </div>
+                </h2>
+              </header>
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: `${article.note}`,
+                }}
+              />
+            </>
+          )}
         </article>
       </main>
       <footer className={styles.footer}>
